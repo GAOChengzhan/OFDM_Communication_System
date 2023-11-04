@@ -3,43 +3,38 @@
 OFDM is a mainstream PHY-layer technology widely adopted by modern wireless networks (e.g., WiFi and LTE). In this repo, an OFDM communication system in Matlab is implemented. The system represents a simplified version of the WiFi (802.11) PHY layer, which involves packet construction at the transmitter side, and packet
 detection, synchronization and decoding at the receiver side. 
 
-(1) Packet construction and OFDM modulation.
-Step (a) BPSK modulation: Create a packet represented by a vector of random bits
-{0,1,1,0,1…}. The vector should contain 4160 bits (you can also decide your own number of
-bits, but make sure it’s larger than 1000 bits). Convert the digital bits into BPSK symbols (1+0*j
-or -1+0*j), and then group the BPSK symbols into 802.11 OFDM symbols. We already
-discussed about the structure of one OFDM symbol in 802.11 in lecture 4 and lecture 5. For the 4
-pilots in each OFDM symbol, you can assume all of them are fixed to 1+0*j.
-Step (b) OFDM modulation: modulate each OFDM symbol using 64-point IFFT, and add a 16-
-sample cyclic prefix to it.
-Ref: IEEE 802.11-2007, Section 17.3.5.9. Be careful about the mapping between FFT bin, the
-subcarrier index, and the data bits. They are illustrated in Figure 17-3 and described in equations
-17-23.
-Step (c) Add STF and LTF preambles to each data packet, following Sec. 17.3.3 of IEEE
-802.11-2007. Note that both preambles are a sequence of complex numbers in frequency domain,
-and should be converted to time domain using IFFT, similar to the data symbols.
-Step (c) Plot the magnitude of samples in the resulting STF. Also, plot the power spectrum
-density of the OFDM data symbols. 802.11 uses 64 frequency bins (subcarriers) for each OFDM
-symbol. So when plotting the spectrum, you should use 64-point FFT.
-Note: IEEE 802.11-2007 is available online at:
-http://ieeexplore.ieee.org/xpl/mostRecentIssue.jsp?punumber=4248376
-(2) Packet transmission and channel distortion
-After the above steps, the packet is modulated into a sequence of samples (complex numbers).
-Now, add a number of (e.g., 100) zero samples before the packet, to represent the idle period
-before the actual transmission happens. Suppose the packet is sent through a simplified wireless
-channel, with the following distortion effects:
-(i) Magnitude distortion: the channel attenuates the magnitude of each sample to
-10^-5 of the original
-(ii) The channel shifts the phase of each sample by -3pi/4, i.e., multiplying it by exp(-
-j*3pi/4)
-(iii) The imperfect radio hardware causes a frequency offset between transmitter and
-receiver. This offset causes the receiver's phase to drift from the transmitter's
-phase. Suppose the phase drift is exp(-j*2*pi*0.00017) per sample, i.e., for the k-
-th sample, the phase drift is exp(-j*2*pi*0.00017*k)
-(iv) Add channel noise. For each sample, add a Gaussian random number (mean 0 and
-variance 10^-14) to represent channel noise.
-Plot the magnitude of samples in the packet’s STF, after the channel distortion effects.
-(3) Packet detection
+## (1) Packet construction and OFDM modulation.
+#### Step (a) BPSK modulation: 
+Created a packet represented by a vector of random bits {0,1,1,0,1…}. The vector contains 4800 bits. Converted the digital bits into BPSK symbols (1+0*j or -1+0*j), and then grouped the BPSK symbols into 802.11 OFDM symbols. 
+#### Step (b) OFDM modulation: 
+Modulated each OFDM symbol using 64-point IFFT, and added a 16-sample cyclic prefix to it.
+Ref: IEEE 802.11-2007, Section 17.3.5.9. 
+#### Step (c) Add STF and LTF preambles to each data packet
+Followed Sec. 17.3.3 of IEEE 802.11-2007. 
+
+**The magnitude of samples in the resulting STF**
+![Magnitude_Samples_SFT](https://github.com/GAOChengzhan/OFDM_Communication_System/assets/39005000/cf7d29bd-3623-4d88-a5fd-5b8de52d8246)
+
+**The power spectrum density of the OFDM data symbols**
+![Power_Spectrum_Density](https://github.com/GAOChengzhan/OFDM_Communication_System/assets/39005000/17274768-4bc5-4905-8a46-da778b9beb07)
+
+
+## (2) Packet transmission and channel distortion
+After the above steps, the packet was modulated into a sequence of samples (complex numbers). A number of (e.g., 100) zero samples was added before the packet, to represent the idle period before the actual transmission happens. Suppose the packet was sent through a simplified wireless channel, with the following distortion effects:
+
+(i) Magnitude distortion: the channel attenuates the magnitude of each sample to 10^-5 of the original
+
+(ii) The channel shifted the phase of each sample by -3pi/4, i.e., multiplying it by exp(-j*3pi/4)
+
+(iii) The imperfect radio hardware caused a frequency offset between transmitter and receiver. This offset caused the receiver's phase to drift from the transmitter's phase. Suppose the phase drift was exp(-j * 2 * pi * 0.00017) per sample, i.e., for the kth sample, the phase drift is exp(-j * 2 * pi * 0.00017 * k)
+
+(iv) Channel noise. For each sample, a Gaussian random number (mean 0 and variance 10^-14) was added to represent channel noise.
+
+**The magnitude of samples in the packet’s STF, after the channel distortion effects:**
+![STF_Magnitudes_PostDistortion](https://github.com/GAOChengzhan/OFDM_Communication_System/assets/39005000/c49e68af-ce4d-438b-81ee-f312729f4a5f)
+
+
+## (3) Packet detection
 The channel-distorted samples are what the receiver actually receives. But the receiver actually
 needs the packets and the bits therein. So how does a receiver know a packet arrives? Recall in
 lecture 5 we discussed about using self-correlation algorithm to detect the presence of the STF,
