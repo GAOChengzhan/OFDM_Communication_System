@@ -6,6 +6,10 @@ detection, synchronization and decoding at the receiver side.
 ## (1) Packet construction and OFDM modulation.
 #### Step (a) BPSK modulation: 
 Create a packet represented by a vector of random bits {0,1,1,0,1…}. The vector contains 4800 bits. Convert the digital bits into BPSK symbols (1+0*j or -1+0*j), and then group the BPSK symbols into 802.11 OFDM symbols. 
+
+<img width="848" alt="image" src="https://github.com/GAOChengzhan/OFDM_Communication_System/assets/39005000/0818d158-cb93-4660-a8ab-762c4a762a7a">
+
+
 #### Step (b) OFDM modulation: 
 Modulate each OFDM symbol using 64-point IFFT, and add a 16-sample cyclic prefix to it.
 Ref: IEEE 802.11-2007, Section 17.3.5.9. 
@@ -71,3 +75,4 @@ First, as the receiver knows the starting time of each OFDM data symbol, it can 
 Then, it can recover the original BPSK symbols by reverting the channel distortion (We assume the channel is stable over an entire packet. So the OFDM symbols suffer from the same channel distortion as the LTF). 
 
 Finally, it can demap the BPSK symbols to {0,1} information bits and convert the bits into characters. Now the receiver fully recovers the sequence of bits sent by the transmitter! 
+<img width="847" alt="image" src="https://github.com/GAOChengzhan/OFDM_Communication_System/assets/39005000/37196684-135c-4e85-b6a8-3a39b2e74f0b">
